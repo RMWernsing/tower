@@ -1,6 +1,7 @@
 export class TowerEvent{
   constructor(data){
     this.capacity = data.capacity
+    this.coverImg = data.coverImg
     this.creator = data.creator
     this.creatorId = data.creatorId
     this.description = data.description
