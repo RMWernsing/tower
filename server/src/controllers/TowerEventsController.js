@@ -6,8 +6,78 @@ export class TowerEventsController extends BaseController {
   constructor() {
     super('api/events')
     this.router
+      .get('', this.getAllEvents)
+      .get('/:eventId', this.getEventById)
       .use(Auth0Provider.getAuthorizedUserInfo)
+      .delete('/:eventId', this.cancelEvent)
+      .put('/:eventId', this.editEvent)
       .post('', this.createEvent)
+  }
+
+
+  /**
+   * Creates a new value from request body and returns the value
+   * @param {import("express").Request} request
+   * @param {import("express").Response} response
+   * @param {import("express").NextFunction} next
+  */
+  async getAllEvents(request, response, next) {
+    try {
+      const events = await towerEventsService.getAllEvents()
+      response.send(events)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+  * Creates a new value from request body and returns the value
+  * @param {import("express").Request} request
+  * @param {import("express").Response} response
+  * @param {import("express").NextFunction} next
+  */
+  async getEventById(request, response, next) {
+    try {
+      const eventId = request.params.eventId
+      const event = await towerEventsService.getEventById(eventId)
+      response.send(event)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+ * Creates a new value from request body and returns the value
+ * @param {import("express").Request} request
+ * @param {import("express").Response} response
+ * @param {import("express").NextFunction} next
+ */
+  async cancelEvent(request, response, next) {
+    try {
+      const eventId = request.params.eventId
+      const userInfo = request.userInfo
+      const event = await towerEventsService.cancelEvent(userInfo, eventId)
+      response.send(event)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+ * Creates a new value from request body and returns the value
+ * @param {import("express").Request} request
+ * @param {import("express").Response} response
+ * @param {import("express").NextFunction} next
+ */
+  async editEvent(request, response, next) {
+    try {
+      const eventData = request.body
+      const eventId = request.params.eventId
+      const event = await towerEventsService.editEvent(eventData, eventId)
+      response.send(event)
+    } catch (error) {
+      next(error)
+    }
   }
 
   /**
