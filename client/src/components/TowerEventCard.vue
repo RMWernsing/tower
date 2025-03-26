@@ -10,15 +10,17 @@ defineProps({
 
 
 <template>
-  <div class="card mb-4">
-    <img :src="event.coverImg" class="card-img-top" :alt="`Image for the ${event.name} event`">
-    <div class="card-body">
-      <h5 class="card-title">{{ event.name }}</h5>
-      <p class="card-text">{{ event.location }}</p>
-      <p class="card-text"> {{ event.startDate.toDateString() }}</p>
-      <p class="card-text">Hosted by {{ event.creator.name }}</p>
+  <RouterLink :to="{ name: 'EventDetail', params: { eventId: event.id } }">
+    <div class="card mb-4">
+      <img :src="event.coverImg" class="card-img-top" :alt="`Image for the ${event.name} event`">
+      <div class="card-body">
+        <h5 class="card-title">{{ event.name }}</h5>
+        <p class="card-text">{{ event.location }}</p>
+        <p class="card-text"> {{ event.startDate.toDateString() }}</p>
+        <p class="card-text">Hosted by {{ event.creator.name }}</p>
+      </div>
     </div>
-  </div>
+  </RouterLink>
 </template>
 
 

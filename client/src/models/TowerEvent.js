@@ -9,6 +9,7 @@ export class TowerEvent{
     this.isCanceled = data.isCanceled
     this.location = data.location
     this.name = data.name
+    this.type = data.type
     this.createdAt = new Date(data.createdAt)
     this.startDate = new Date(data.startDate)
     this.updatedAt = new Date(data.updatedAt)

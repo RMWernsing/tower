@@ -1,5 +1,6 @@
 <script setup>
 import { AppState } from '@/AppState.js';
+import EventFormModal from '@/components/EventFormModal.vue';
 import TowerEventCard from '@/components/TowerEventCard.vue';
 import { towerEventsService } from '@/services/TowerEventsService.js';
 import { logger } from '@/utils/Logger.js';
@@ -57,7 +58,8 @@ async function getEvents() {
           </div>
         </div>
         <div class="col-md-5">
-          <div class="d-flex bg-grey p-4 gap-3 my-5">
+          <div type="button" title="Create Event" class="d-flex bg-grey p-4 gap-3 my-5" data-bs-toggle="modal"
+            data-bs-target="#eventModal">
             <span class="mdi mdi-plus fs-2 text-success"></span>
             <div>
               <p class="fs-4 fw-bold">Start an event to invite your friends</p>
@@ -75,6 +77,7 @@ async function getEvents() {
       </div>
     </div>
   </section>
+  <EventFormModal />
 </template>
 
 <style scoped lang="scss">
