@@ -38,11 +38,16 @@ async function getEventById() {
       <div class="row justify-content-between">
         <div class="col-md-7">
           <div class="my-3">
-            <div class="d-flex align-items-center gap-3">
-              <h1>
-                {{ event.name }}
-              </h1>
-              <span class="rounded-pill bg-danger px-2 text-light">{{ event.type }}</span>
+            <div class="d-flex align-items-center justify-content-between gap-3">
+              <div>
+                <h1>
+                  {{ event.name }}
+                </h1>
+                <span class="rounded-pill bg-indigo px-2 text-light">{{ event.type }}</span>
+              </div>
+              <div>
+                <button class="btn btn-danger" title="cancel event">cancel event</button>
+              </div>
             </div>
             <div class="mt-4">
               <p class="fs-5">{{ event.description }}</p>

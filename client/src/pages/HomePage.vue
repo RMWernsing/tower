@@ -5,9 +5,36 @@ import TowerEventCard from '@/components/TowerEventCard.vue';
 import { towerEventsService } from '@/services/TowerEventsService.js';
 import { logger } from '@/utils/Logger.js';
 import { Pop } from '@/utils/Pop.js';
-import { computed, onMounted } from 'vue';
+import { all } from 'axios';
+import { computed, onMounted, ref } from 'vue';
 
-const events = computed(() => AppState.events)
+const events = computed(() => {
+  if (filterType.value == 'all') {
+    return AppState.events
+  }
+  return AppState.events.filter(event => event.type == filterType.value
+  )
+})
+const filterType = ref('all')
+// TODO add color to the types array
+const types = [
+  {
+    name: 'concert',
+    span: 'guitar-electric'
+  },
+  {
+    name: 'convention',
+    span: `account-group`
+  },
+  {
+    name: 'sport',
+    span: `soccer`
+  },
+  {
+    name: 'digital',
+    span: `monitor`
+  },
+]
 
 onMounted(() => {
   getEvents()
@@ -64,6 +91,25 @@ async function getEvents() {
             <div>
               <p class="fs-4 fw-bold">Start an event to invite your friends</p>
               <p>Create your own Tower event, and draw from a community of millions</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="row">
+            <div v-for="type in types" :key="type.name" class="col-md-3 mb-5">
+              <div @click="filterType = type.name" role="button" :title="`filter for ${type.name} events`"
+                class="text-center">
+                <span :class="`mdi mdi-${type.span} fs-2`"></span>
+                <p class="fs-4">{{ type.name }}</p>
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              <div class="col-md-3 mb-5">
+                <div @click="filterType = 'all'" role="button" title="Filter for all events" class="text-center">
+                  <span class="mdi mdi-infinity fs-2"></span>
+                  <p class="fs-4">all</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
