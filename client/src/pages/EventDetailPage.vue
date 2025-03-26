@@ -7,6 +7,7 @@ import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 
 const event = computed(() => AppState.activeEvent)
+const account = computed(() => AppState.account)
 const route = useRoute()
 
 onMounted(() => {
@@ -21,6 +22,21 @@ async function getEventById() {
   catch (error) {
     Pop.error(error, 'Could not get event by ID')
     logger.error('COULD NOT GET EVENT BY ID', error)
+  }
+}
+
+async function cancelEvent() {
+  try {
+    const confirmed = await Pop.confirm(`Are you sure you want to ${event.value.isCanceled ? 'un-cancel' : 'cancel'} the ${event.value.name}?`)
+    if (!confirmed) {
+      return
+    }
+    const eventId = route.params.eventId
+    await towerEventsService.cancelEvent(eventId)
+  }
+  catch (error) {
+    Pop.error(error, 'Could not cancel event')
+    logger.error('COULD NOT CANCEL EVENT', error)
   }
 }
 
@@ -43,10 +59,15 @@ async function getEventById() {
                 <h1>
                   {{ event.name }}
                 </h1>
-                <span class="rounded-pill bg-indigo px-2 text-light">{{ event.type }}</span>
+                <div class="d-flex gap-3">
+                  <span class="rounded-pill bg-indigo px-2 text-light">{{ event.type }}</span>
+                  <div v-if="event.isCanceled">
+                    <span class="rounded-pill bg-danger px-2 text-light">CANCELED</span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <button class="btn btn-danger" title="cancel event">cancel event</button>
+              <div v-if="event.creatorId == account?.id">
+                <button @click="cancelEvent()" class="btn btn-danger" title="cancel event">cancel event</button>
               </div>
             </div>
             <div class="mt-4">
