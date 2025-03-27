@@ -49,7 +49,7 @@ async function deleteTicket(eventId) {
       </div>
       <div class="col-md-3 mt-5">
         <h1 class="display-5 fw-medium text-center">{{ account?.name }}</h1>
-        <p>Tickets Purchased: {{ accountEvents.length }}</p>
+        <p class="text-center">Tickets Purchased: {{ accountEvents.length }}</p>
       </div>
     </div>
     <div class="col-12 mt-5">
@@ -57,7 +57,7 @@ async function deleteTicket(eventId) {
         <div class="col-12 mt-5">
           <h2>Your Upcoming Events</h2>
         </div>
-        <div v-for="event in accountEvents" :key="event.id" class="col-md-4">
+        <div v-for="event in accountEvents" :key="event.id" class="col-md-4 px-4">
           <div>
             <TowerEventCard :event="event.event" />
             <button @click="deleteTicket(event.id)" class="btn btn-danger rounded-pill mb-5">

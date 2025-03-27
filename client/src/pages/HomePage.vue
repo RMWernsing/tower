@@ -72,7 +72,7 @@ async function getEvents() {
   <section class="container">
     <div class="row mt-5 justify-content-center">
       <div class="col-12">
-        <h2>How Tower Works</h2>
+        <h2 class="ms-3">How Tower Works</h2>
       </div>
       <div class="row justify-content-evenly">
         <div class="col-md-5">
@@ -89,13 +89,14 @@ async function getEvents() {
             data-bs-target="#eventModal">
             <span class="mdi mdi-plus fs-2 text-success"></span>
             <div>
-              <p class="fs-4 fw-bold">Start an event to invite your friends</p>
-              <p>Create your own Tower event, and draw from a community of millions</p>
+              <p class="fs-4 fw-bold">Click here to start an event!</p>
+              <p>Create your own Tower event, and draw from a community of millions.</p>
             </div>
           </div>
         </div>
         <div class="col-md-12">
           <div class="row">
+            <h2 class="mb-5">Explore Categories</h2>
             <div v-for="type in types" :key="type.name" class="col-md-3 mb-5">
               <div @click="filterType = type.name" role="button" :title="`filter for ${type.name} events`"
                 class="text-center">
@@ -103,11 +104,13 @@ async function getEvents() {
                 <p class="fs-4">{{ type.name }}</p>
               </div>
             </div>
-            <div class="row justify-content-center">
-              <div class="col-md-3 mb-5">
-                <div @click="filterType = 'all'" role="button" title="Filter for all events" class="text-center">
-                  <span class="mdi mdi-infinity fs-2"></span>
-                  <p class="fs-4">all</p>
+            <div class="col-12">
+              <div class="row justify-content-center">
+                <div class="col-md-3 mb-5">
+                  <div @click="filterType = 'all'" role="button" title="Filter for all events" class="text-center">
+                    <span class="mdi mdi-infinity fs-2"></span>
+                    <p class="fs-4">all</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -118,7 +121,7 @@ async function getEvents() {
   </section>
   <section class="container">
     <div class="row">
-      <div v-for="event in events" :key="event.id" class="col-md-4">
+      <div v-for="event in events" :key="event.id" class="col-md-4 px-4">
         <TowerEventCard :event="event" />
       </div>
     </div>

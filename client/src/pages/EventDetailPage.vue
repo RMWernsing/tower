@@ -1,5 +1,7 @@
 <script setup>
 import { AppState } from '@/AppState.js';
+import CommentCard from '@/components/CommentCard.vue';
+import CommentForm from '@/components/CommentForm.vue';
 import { ticketsService } from '@/services/TicketsService.js';
 import { towerEventsService } from '@/services/TowerEventsService.js';
 import { logger } from '@/utils/Logger.js';
@@ -13,6 +15,7 @@ const account = computed(() => AppState.account)
 const tickets = computed(() => event.value.capacity - event.value.ticketCount)
 const attendees = computed(() => AppState.attendees)
 const isAttending = computed(() => attendees.value.some(attendee => attendee.accountId == account.value.id))
+const comments = computed(() => AppState.comments)
 const ticketsLeft = computed(() => {
   if (tickets.value < 0) {
     return 0
@@ -23,6 +26,7 @@ const ticketsLeft = computed(() => {
 onMounted(() => {
   getEventById()
   getAttendees()
+  getComments()
 })
 
 async function getEventById() {
@@ -74,74 +78,109 @@ async function getAttendees() {
   }
 }
 
+async function getComments() {
+  try {
+    const eventId = route.params.eventId
+    await towerEventsService.getComments(eventId)
+  }
+  catch (error) {
+    Pop.error(error, 'Could not get comments')
+    logger.error('COULD NOT GET COMMENTS', error)
+  }
+}
+
 </script>
 
 
 <template>
   <section v-if="event" class="container">
-    <div class="row mt-4">
-      <div class="d-flex justify-content-center">
-        <div class="col-12">
+    <div class="row mt-4 mx-1">
+      <div class="col-12">
+        <div class="d-flex justify-content-center">
           <img class="cover-img rounded-5" :src="event.coverImg" alt="">
         </div>
       </div>
-      <div class="row justify-content-between">
-        <div class="col-md-7">
-          <div class="my-3">
-            <div class="d-flex align-items-center justify-content-between gap-3">
-              <div>
-                <h1>
-                  {{ event.name }}
-                </h1>
-                <div class="d-flex gap-3">
-                  <span class="rounded-pill bg-success px-2 text-light">{{ event.type }}</span>
-                  <div v-if="event.isCanceled">
-                    <span class="rounded-pill bg-danger px-2 text-light">CANCELED</span>
+      <div class="col-12">
+        <p class="fs-3 mt-2">Hosted by</p>
+        <div class="d-flex gap-2 align-items-center fs-2">
+          <img class="creator-img" :src="event.creator.picture" alt="">
+          <p>{{ event.creator.name }}</p>
+        </div>
+      </div>
+      <div>
+        <div class="row justify-content-between">
+          <div class="col-md-8">
+            <div class="my-3">
+              <div class="d-flex align-items-center justify-content-between gap-3">
+                <div>
+                  <h1>
+                    {{ event.name }}
+                  </h1>
+                  <div class="d-flex gap-3 flex-wrap">
+                    <span class="rounded-pill bg-success px-2 text-light">{{ event.type }}</span>
+                    <div v-if="event.isCanceled">
+                      <span class="rounded-pill bg-danger px-2 text-light">CANCELED</span>
+                    </div>
+                    <div v-if="ticketsLeft == 0">
+                      <span class="rounded-pill bg-indigo px-2 text-light">SOLD OUT</span>
+                    </div>
                   </div>
-                  <div v-if="ticketsLeft == 0">
-                    <span class="rounded-pill bg-indigo px-2 text-light">SOLD OUT</span>
+                </div>
+                <div v-if="event.creatorId == account?.id">
+                  <button @click="cancelEvent()" class="btn btn-danger" title="cancel event">cancel event</button>
+                </div>
+              </div>
+              <div class="mt-4">
+                <p class="fs-5">{{ event.description }}</p>
+              </div>
+              <h2 class="mt-5">
+                Date & Time
+              </h2>
+              <div class="d-flex align-items-center gap-3">
+                <span class="mdi mdi-calendar fs-1 text-indigo"></span>
+                <p class="fs-5">{{ event.startDate.toDateString() }}</p>
+                <p class="fs-5">{{ event.startDate.toLocaleTimeString() }}</p>
+              </div>
+              <h2 class="mt-5">
+                Location
+              </h2>
+              <div class="d-flex align-items-center gap-3">
+                <span class="mdi mdi-map-marker fs-1 text-indigo"></span>
+                <p class="fs-5">{{ event.location }}</p>
+              </div>
+            </div>
+            <div>
+              <h2 class="my-5">
+                Comments
+              </h2>
+              <div class="bg-grey p-3 rounded-5">
+                <div>
+                  <CommentForm />
+                </div>
+                <div v-if="comments" class="mt-5">
+                  <div v-for="comment in comments" :key="comment.id">
+                    <CommentCard :comment="comment" />
                   </div>
                 </div>
               </div>
-              <div v-if="event.creatorId == account?.id">
-                <button @click="cancelEvent()" class="btn btn-danger" title="cancel event">cancel event</button>
-              </div>
-            </div>
-            <div class="mt-4">
-              <p class="fs-5">{{ event.description }}</p>
-            </div>
-            <h2 class="mt-5">
-              Date & Time
-            </h2>
-            <div class="d-flex align-items-center gap-3">
-              <span class="mdi mdi-calendar fs-1 text-indigo"></span>
-              <p class="fs-5">{{ event.startDate.toDateString() }}</p>
-              <p class="fs-5">{{ event.startDate.toLocaleTimeString() }}</p>
-            </div>
-            <h2 class="mt-5">
-              Location
-            </h2>
-            <div class="d-flex align-items-center gap-3">
-              <span class="mdi mdi-map-marker fs-1 text-indigo"></span>
-              <p class="fs-5">{{ event.location }}</p>
             </div>
           </div>
-        </div>
-        <div class="col-md-3">
-          <div class="text-center my-3">
-            <p class="fs-3">Interested in Going?</p>
-            <p class="fs-5">Grab a Ticket!</p>
-            <p v-if="isAttending">You have a ticket for this event!!!</p>
-            <button :disabled="ticketsLeft == 0 || event.isCanceled" @click="buyTicket()" class="btn btn-indigo"
-              title="buy a ticket">Buy a
-              ticket</button>
-            <p class="mt-3">{{ ticketsLeft }} tickets remaining</p>
-          </div>
-          <p class="mt-3 fs-5">Attendees</p>
-          <div v-for="attendee in attendees" :key="attendee.id" class="mb-2">
-            <span class="me-4"><img class="round-img" :src="attendee.profile.picture"
-                :alt="`profile picture of ${attendee.profile.name}`"></span>
-            <span>{{ attendee.profile.name }}</span>
+          <div class="col-md-3">
+            <div class="text-center my-3">
+              <p class="fs-3">Interested in Going?</p>
+              <p class="fs-5">Grab a Ticket!</p>
+              <p v-if="isAttending">You have a ticket for this event!!!</p>
+              <button :disabled="ticketsLeft == 0 || event.isCanceled" @click="buyTicket()" class="btn btn-indigo"
+                title="buy a ticket">Buy a
+                ticket</button>
+              <p class="mt-3">{{ ticketsLeft }} tickets remaining</p>
+            </div>
+            <p class="mt-3 fs-5">Attendees</p>
+            <div v-for="attendee in attendees" :key="attendee.id" class="mb-2">
+              <span class="me-4"><img class="round-img" :src="attendee.profile.picture"
+                  :alt="`profile picture of ${attendee.profile.name}`"></span>
+              <span>{{ attendee.profile.name }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -156,6 +195,13 @@ async function getAttendees() {
   object-position: center;
   object-fit: cover;
   width: 100%;
+}
+
+.creator-img {
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  object-fit: cover;
+  height: 6dvh;
 }
 
 .round-img {

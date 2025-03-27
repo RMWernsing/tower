@@ -5,8 +5,16 @@ import { AppState } from "@/AppState.js"
 import { Account } from "@/models/Account.js"
 import { Attendee } from "@/models/Attendee.js"
 import { AccountEvent } from "@/models/Ticket.js"
+import { Comment } from "@/models/Comment.js"
 
 class TowerEventsService{
+  async getComments(eventId) {
+    AppState.comments = []
+    const response = await api.get(`api/events/${eventId}/comments`)
+    logger.log('here are your comments', response.data)
+    const comments = response.data.map(pojo => new Comment(pojo))
+    AppState.comments = comments
+  }
   async getEventsImGoingTo() {
     const response = await api.get('account/tickets')
     logger.log('here are my events im going to!!!', response.data)
