@@ -1,4 +1,4 @@
-import { Forbidden } from "@bcwdev/auth0provider/lib/Errors.js"
+import { BadRequest, Forbidden } from "@bcwdev/auth0provider/lib/Errors.js"
 import { dbContext } from "../db/DbContext.js"
 
 class TowerEventsService {
@@ -23,8 +23,14 @@ class TowerEventsService {
     return event
   }
 
-  async editEvent(eventData, eventId) {
+  async editEvent(eventData, eventId, userInfo) {
     const event = await this.getEventById(eventId)
+    if (event.isCanceled) {
+      throw new BadRequest('You cannot edit canceled event')
+    }
+    if (event.creatorId != userInfo.id) {
+      throw new Forbidden(`YOU CANNOT EDIT ANOTHER USERS EVENT!!!`)
+    }
     event.name = eventData.name ?? event.name
     event.description = eventData.description ?? event.description
     event.save()

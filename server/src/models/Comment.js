@@ -13,5 +13,8 @@ export const CommentSchema = new Schema(
 )
 
 CommentSchema.virtual('creator', {
-
+  localField: 'creatorId',
+  foreignField: '_id',
+  ref: 'Account',
+  justOne: true
 })

@@ -2,6 +2,7 @@ import { Auth0Provider } from "@bcwdev/auth0provider/lib/Auth0Provider.js";
 import BaseController from "../utils/BaseController.js";
 import { towerEventsService } from "../services/TowerEventsService.js";
 import { ticketsService } from "../services/TicketsService.js";
+import { commentsService } from "../services/CommentsService.js";
 
 export class TowerEventsController extends BaseController {
   constructor() {
@@ -10,6 +11,7 @@ export class TowerEventsController extends BaseController {
       .get('', this.getAllEvents)
       .get('/:eventId', this.getEventById)
       .get('/:eventId/tickets', this.getEventTickets)
+      .get('/:eventId/comments', this.getEventComments)
       .use(Auth0Provider.getAuthorizedUserInfo)
       .delete('/:eventId', this.cancelEvent)
       .put('/:eventId', this.editEvent)
@@ -65,6 +67,22 @@ export class TowerEventsController extends BaseController {
   }
 
   /**
+  * Creates a new value from request body and returns the value
+  * @param {import("express").Request} request
+  * @param {import("express").Response} response
+  * @param {import("express").NextFunction} next
+  */
+  async getEventComments(request, response, next) {
+    try {
+      const eventId = request.params.eventId
+      const comments = await commentsService.getEventComments(eventId)
+      response.send(comments)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
  * Creates a new value from request body and returns the value
  * @param {import("express").Request} request
  * @param {import("express").Response} response
@@ -85,7 +103,8 @@ export class TowerEventsController extends BaseController {
     try {
       const eventData = request.body
       const eventId = request.params.eventId
-      const event = await towerEventsService.editEvent(eventData, eventId)
+      const userInfo = request.userInfo
+      const event = await towerEventsService.editEvent(eventData, eventId, userInfo)
       response.send(event)
     } catch (error) {
       next(error)
