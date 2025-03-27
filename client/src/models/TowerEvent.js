@@ -10,6 +10,7 @@ export class TowerEvent{
     this.location = data.location
     this.name = data.name
     this.type = data.type
+    this.ticketCount = data.ticketCount
     this.createdAt = new Date(data.createdAt)
     this.startDate = new Date(data.startDate)
     this.updatedAt = new Date(data.updatedAt)

@@ -70,7 +70,7 @@ async function getEvents() {
     </div>
   </section>
   <section class="container">
-    <div class="row mt-5">
+    <div class="row mt-5 justify-content-center">
       <div class="col-12">
         <h2>How Tower Works</h2>
       </div>

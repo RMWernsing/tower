@@ -7,7 +7,7 @@ import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.js';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-
+const router = useRouter()
 
 const editableEventData = ref({
   name: '',
@@ -22,7 +22,7 @@ const editableEventData = ref({
 
 async function createEvent() {
   try {
-    await towerEventsService.createEvent(editableEventData.value)
+    const towerEvent = await towerEventsService.createEvent(editableEventData.value)
     editableEventData.value = {
       name: '',
       description: '',
@@ -33,12 +33,15 @@ async function createEvent() {
       type: '',
     }
     Modal.getOrCreateInstance('#eventModal').hide()
+    router.push({ name: 'EventDetail', params: { eventId: towerEvent.id } })
   }
   catch (error) {
     Pop.error(error, 'Could not create event')
     logger.error('COULD NOT CREATE DATE', error)
   }
 }
+
+
 
 </script>
 

@@ -1,6 +1,7 @@
 import { Auth0Provider } from "@bcwdev/auth0provider/lib/Auth0Provider.js";
 import BaseController from "../utils/BaseController.js";
 import { towerEventsService } from "../services/TowerEventsService.js";
+import { ticketsService } from "../services/TicketsService.js";
 
 export class TowerEventsController extends BaseController {
   constructor() {
@@ -8,6 +9,7 @@ export class TowerEventsController extends BaseController {
     this.router
       .get('', this.getAllEvents)
       .get('/:eventId', this.getEventById)
+      .get('/:eventId/tickets', this.getEventTickets)
       .use(Auth0Provider.getAuthorizedUserInfo)
       .delete('/:eventId', this.cancelEvent)
       .put('/:eventId', this.editEvent)
@@ -47,6 +49,22 @@ export class TowerEventsController extends BaseController {
   }
 
   /**
+  * Creates a new value from request body and returns the value
+  * @param {import("express").Request} request
+  * @param {import("express").Response} response
+  * @param {import("express").NextFunction} next
+  */
+  async getEventTickets(request, response, next) {
+    try {
+      const eventId = request.params.eventId
+      const tickets = await ticketsService.getEventTickets(eventId)
+      response.send(tickets)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
  * Creates a new value from request body and returns the value
  * @param {import("express").Request} request
  * @param {import("express").Response} response
@@ -63,12 +81,6 @@ export class TowerEventsController extends BaseController {
     }
   }
 
-  /**
- * Creates a new value from request body and returns the value
- * @param {import("express").Request} request
- * @param {import("express").Response} response
- * @param {import("express").NextFunction} next
- */
   async editEvent(request, response, next) {
     try {
       const eventData = request.body

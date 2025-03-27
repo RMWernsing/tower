@@ -4,12 +4,12 @@ import { dbContext } from "../db/DbContext.js"
 class TowerEventsService {
 
   async getAllEvents() {
-    const events = await dbContext.TowerEvents.find().populate('creator')
+    const events = await dbContext.TowerEvents.find().populate('creator').populate('ticketCount').sort('-createdAt')
     return events
   }
 
   async getEventById(eventId) {
-    const event = await dbContext.TowerEvents.findById(eventId).populate('creator')
+    const event = await dbContext.TowerEvents.findById(eventId).populate('creator').populate('ticketCount')
     return event
   }
 
@@ -34,6 +34,7 @@ class TowerEventsService {
   async createEvent(eventData) {
     const event = await dbContext.TowerEvents.create(eventData)
     await event.populate('creator')
+    await event.populate('ticketCount')
     return event
   }
 }
