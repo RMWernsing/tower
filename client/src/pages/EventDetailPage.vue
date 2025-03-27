@@ -162,11 +162,11 @@ async function getComments() {
               <h2 class="my-5">
                 Comments
               </h2>
-              <div class="bg-grey p-3 rounded-5 mb-5">
+              <div class="bg-grey p-3 rounded-5 mb-5 shadow-lg">
                 <div>
                   <CommentForm />
                 </div>
-                <div v-if="comments" class="mt-5">
+                <div v-if="comments">
                   <div v-for="comment in comments" :key="comment.id">
                     <CommentCard :comment="comment" />
                   </div>
@@ -175,7 +175,7 @@ async function getComments() {
             </div>
           </div>
           <div class="col-md-3">
-            <div class="text-center my-3 bg-grey rounded-4 p-2">
+            <div class="text-center my-3 bg-grey rounded-4 p-2 shadow-lg">
               <p class="fs-3">Interested in Going?</p>
               <div class="bg-light rounded-4 py-2 mb-4 mx-2">
                 <p class="fs-5">Grab a Ticket!</p>
@@ -186,7 +186,7 @@ async function getComments() {
                 <p class="mt-3">{{ ticketsLeft }} tickets remaining</p>
               </div>
             </div>
-            <div class="rounded-4 bg-grey p-3">
+            <div class="rounded-4 bg-grey p-3 shadow-lg">
               <p class="fs-5">Attendees</p>
               <div v-for="attendee in attendees" :key="attendee.id" class="mb-2">
                 <div class="bg-light rounded-4 p-2">
