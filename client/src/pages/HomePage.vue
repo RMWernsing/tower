@@ -20,19 +20,23 @@ const filterType = ref('all')
 const types = [
   {
     name: 'concert',
-    span: 'guitar-electric'
+    span: 'guitar-electric',
+    color: 'purple',
   },
   {
     name: 'convention',
-    span: `account-group`
+    span: `account-group`,
+    color: 'primary'
   },
   {
     name: 'sport',
-    span: `soccer`
+    span: `soccer`,
+    color: 'info',
   },
   {
     name: 'digital',
-    span: `monitor`
+    span: `monitor`,
+    color: 'orange'
   },
 ]
 
@@ -96,24 +100,23 @@ async function getEvents() {
             </div>
           </div>
         </div>
-        <div class="col-md-12">
-          <div class="row">
-            <h2 class="mb-5">Explore Categories</h2>
-            <div v-for="type in types" :key="type.name" class="col-md-3 mb-5">
-              <div @click="filterType = type.name" role="button" :title="`filter for ${type.name} events`"
-                class="text-center">
-                <span :class="`mdi mdi-${type.span} fs-2`"></span>
-                <p class="fs-4">{{ type.name }}</p>
+        <h2 class="mb-5">Explore Categories</h2>
+        <div class="col-md-12 d-flex justify-content-evenly flex-wrap">
+          <div v-for="type in types" :key="type.name" class="mb-5 filter-width">
+            <div @click="filterType = type.name" role="button" :title="`filter for ${type.name} events`"
+              class="text-center ">
+              <div class="bg-grey rounded-4 py-3">
+                <span :class="`mdi mdi-${type.span} text-${type.color} fs-2`"></span>
+                <p class="fs-4 fw-semibold">{{ type.name }}</p>
               </div>
             </div>
-            <div class="col-12">
-              <div class="row justify-content-center">
-                <div class="col-md-3 mb-5">
-                  <div @click="filterType = 'all'" role="button" title="Filter for all events" class="text-center">
-                    <span class="mdi mdi-infinity fs-2"></span>
-                    <p class="fs-4">all</p>
-                  </div>
-                </div>
+          </div>
+          <div class="mb-5">
+            <div @click="filterType = 'all'" role="button" title="Filter for all events"
+              class="text-center filter-width">
+              <div class="bg-grey rounded-4 py-3">
+                <span class="mdi mdi-infinity text-success fs-2"></span>
+                <p class="fs-4 fw-semibold">all</p>
               </div>
             </div>
           </div>
@@ -123,6 +126,7 @@ async function getEvents() {
   </section>
   <section class="container">
     <div class="row">
+      <h2 class="mb-5">Upcoming Events</h2>
       <div v-for="event in events" :key="event.id" class="col-md-4 px-4 mb-4">
         <TowerEventCard :event="event" />
       </div>
@@ -141,5 +145,9 @@ async function getEvents() {
 
 .txt-shadow {
   text-shadow: 1px 1px 5px black;
+}
+
+.filter-width {
+  width: 200px;
 }
 </style>

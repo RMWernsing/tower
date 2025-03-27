@@ -60,7 +60,7 @@ async function deleteTicket(eventId) {
         <div v-for="event in accountEvents" :key="event.id" class="col-md-4 px-4">
           <div>
             <TowerEventCard :event="event.event" />
-            <button @click="deleteTicket(event.id)" class="btn btn-danger rounded-pill mb-5 mt-2">
+            <button @click="deleteTicket(event.id)" class="btn btn-danger rounded-3 mb-5 mt-2">
               Refund Ticket
             </button>
           </div>

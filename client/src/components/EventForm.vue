@@ -63,6 +63,10 @@ async function createEvent() {
         placeholder="Cover Image..." required maxlength="1000">
       <label for="coverImg">Cover Image</label>
     </div>
+    <div v-if="editableEventData.coverImg">
+      <p>Image Preview</p>
+      <img :src="editableEventData.coverImg" alt="preview of your cover image" class="w-100 rounded-4 mb-3">
+    </div>
     <div class="form-floating mb-3">
       <input v-model="editableEventData.location" type="text" class="form-control" id="location"
         placeholder="Location..." required minlength="1" maxlength="1000">

@@ -16,6 +16,12 @@ const tickets = computed(() => event.value.capacity - event.value.ticketCount)
 const attendees = computed(() => AppState.attendees)
 const isAttending = computed(() => attendees.value.some(attendee => attendee.accountId == account.value.id))
 const comments = computed(() => AppState.comments)
+const cancelButton = computed(() => {
+  if (!event.value.isCanceled) {
+    return 'cancel'
+  }
+  return 'un-cancel'
+})
 const ticketsLeft = computed(() => {
   if (tickets.value < 0) {
     return 0
@@ -128,7 +134,8 @@ async function getComments() {
                   </div>
                 </div>
                 <div v-if="event.creatorId == account?.id">
-                  <button @click="cancelEvent()" class="btn btn-danger rounded-4" title="cancel event">Cancel
+                  <button @click="cancelEvent()" class="btn btn-danger rounded-4" title="cancel event">{{ cancelButton
+                  }}
                     Event</button>
                 </div>
               </div>
