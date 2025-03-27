@@ -55,17 +55,19 @@ async function getEvents() {
 </script>
 
 <template>
-  <section class="container-fluid text-light txt-shadow">
-    <div class="row bg-img">
-      <div class="col-12">
+  <section class="container-fluid text-light txt-shadow bg-img">
+    <div class="row justify-content-evenly">
+      <div class="col-md-4">
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-md-12 mt-5">
             <h1>Event management for people, by people</h1>
             <p class="fs-5">Whatever your interest, from hiking and reading to networking and skill sharing, there are
               thousands of
               people who share it on Tower. Events are happening every day - log in to join the fun</p>
           </div>
         </div>
+      </div>
+      <div class="col-3 md-none">
       </div>
     </div>
   </section>
@@ -121,7 +123,7 @@ async function getEvents() {
   </section>
   <section class="container">
     <div class="row">
-      <div v-for="event in events" :key="event.id" class="col-md-4 px-4">
+      <div v-for="event in events" :key="event.id" class="col-md-4 px-4 mb-4">
         <TowerEventCard :event="event" />
       </div>
     </div>

@@ -97,7 +97,7 @@ async function getComments() {
     <div class="row mt-4 mx-1">
       <div class="col-12">
         <div class="d-flex justify-content-center">
-          <img class="cover-img rounded-5" :src="event.coverImg" alt="">
+          <img class="cover-img rounded-4" :src="event.coverImg" alt="">
         </div>
       </div>
       <div class="col-12">
@@ -106,17 +106,18 @@ async function getComments() {
           <img class="creator-img" :src="event.creator.picture" alt="">
           <p>{{ event.creator.name }}</p>
         </div>
+        <hr>
       </div>
       <div>
         <div class="row justify-content-between">
-          <div class="col-md-8">
+          <div class="col-md-7">
             <div class="my-3">
               <div class="d-flex align-items-center justify-content-between gap-3">
                 <div>
-                  <h1>
+                  <h1 class="display-5 fw-bold">
                     {{ event.name }}
                   </h1>
-                  <div class="d-flex gap-3 flex-wrap">
+                  <div class="d-flex gap-3 flex-wrap pt-2">
                     <span class="rounded-pill bg-success px-2 text-light">{{ event.type }}</span>
                     <div v-if="event.isCanceled">
                       <span class="rounded-pill bg-danger px-2 text-light">CANCELED</span>
@@ -127,10 +128,11 @@ async function getComments() {
                   </div>
                 </div>
                 <div v-if="event.creatorId == account?.id">
-                  <button @click="cancelEvent()" class="btn btn-danger" title="cancel event">cancel event</button>
+                  <button @click="cancelEvent()" class="btn btn-danger rounded-4" title="cancel event">Cancel
+                    Event</button>
                 </div>
               </div>
-              <div class="mt-4">
+              <div class="mt-4 shadow-lg rounded-4 pt-2 px-3 pb-1">
                 <p class="fs-5">{{ event.description }}</p>
               </div>
               <h2 class="mt-5">
@@ -153,7 +155,7 @@ async function getComments() {
               <h2 class="my-5">
                 Comments
               </h2>
-              <div class="bg-grey p-3 rounded-5">
+              <div class="bg-grey p-3 rounded-5 mb-5">
                 <div>
                   <CommentForm />
                 </div>
@@ -166,20 +168,26 @@ async function getComments() {
             </div>
           </div>
           <div class="col-md-3">
-            <div class="text-center my-3">
+            <div class="text-center my-3 bg-grey rounded-4 p-2">
               <p class="fs-3">Interested in Going?</p>
-              <p class="fs-5">Grab a Ticket!</p>
-              <p v-if="isAttending">You have a ticket for this event!!!</p>
-              <button :disabled="ticketsLeft == 0 || event.isCanceled" @click="buyTicket()" class="btn btn-indigo"
-                title="buy a ticket">Buy a
-                ticket</button>
-              <p class="mt-3">{{ ticketsLeft }} tickets remaining</p>
+              <div class="bg-light rounded-4 py-2 mb-4 mx-2">
+                <p class="fs-5">Grab a Ticket!</p>
+                <p v-if="isAttending">You have a ticket for this event!!!</p>
+                <button :disabled="ticketsLeft == 0 || event.isCanceled" @click="buyTicket()" class="btn btn-indigo"
+                  title="buy a ticket">Buy a
+                  ticket</button>
+                <p class="mt-3">{{ ticketsLeft }} tickets remaining</p>
+              </div>
             </div>
-            <p class="mt-3 fs-5">Attendees</p>
-            <div v-for="attendee in attendees" :key="attendee.id" class="mb-2">
-              <span class="me-4"><img class="round-img" :src="attendee.profile.picture"
-                  :alt="`profile picture of ${attendee.profile.name}`"></span>
-              <span>{{ attendee.profile.name }}</span>
+            <div class="rounded-4 bg-grey p-3">
+              <p class="fs-5">Attendees</p>
+              <div v-for="attendee in attendees" :key="attendee.id" class="mb-2">
+                <div class="bg-light rounded-4 p-2">
+                  <span class="me-4"><img class="round-img" :src="attendee.profile.picture"
+                      :alt="`profile picture of ${attendee.profile.name}`"></span>
+                  <span>{{ attendee.profile.name }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

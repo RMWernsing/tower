@@ -31,7 +31,7 @@ async function deleteComment(commentId) {
 
 
 <template>
-  <div class="rounded-5 shadow-lg p-3 d-flex gap-4 mt-4">
+  <div class="rounded-5 shadow-lg p-3 d-flex gap-4 mt-4 bg-light">
     <img :src="comment.creator.picture" :alt="`profile picture for ${comment.creator.name}`">
     <div class="mt-2 me-3 flex-grow-1">
       <div class="d-flex justify-content-between">
