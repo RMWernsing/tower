@@ -95,7 +95,7 @@ async function getEvents() {
             data-bs-target="#eventModal">
             <span class="mdi mdi-plus fs-2 text-success"></span>
             <div>
-              <p class="fs-4 fw-bold">Click here to start an event!</p>
+              <p class="fs-4 fw-bold">Click here to create an event!</p>
               <p>Create your own Tower event, and draw from a community of millions.</p>
             </div>
           </div>
