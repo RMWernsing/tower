@@ -16,26 +16,26 @@ COPY client ./
 # Build the client-side code
 RUN npm run build
 
-# Use a smaller base image for the final server image
-FROM node:22-slim
+# Manually specify an amd64 arch build environment for the dotnet restore to complete
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine-amd64 AS build-env
 
-# Set the working directory in the server container
 WORKDIR /app/server
 
-# Copy the server-side package.json and package-lock.json to the server container
-COPY server/package*.json ./
+# Copy everything
+COPY server/*.csproj ./
 
-# Install server application dependencies
-RUN npm install
+# Restore as distinct layers
+RUN node restore
 
-# Copy the server application source code to the server container
 COPY server ./
+COPY --from=client-builder /app/client/dist /app/server/wwwroot
 
-# Copy the built client files from the client builder container to the server's www directory
-COPY --from=client-builder /app/client/dist /app/server/www
+# Build and publish a release
+RUN dotnet publish -c Release -o out
+# If build fails here, check your /server folder for a *.sln file and delete it
 
-# Expose the port your application runs on (e.g., 3000)
-EXPOSE 3000
-
-# Define the command to start your Node.js application
-CMD [ "node", "index.js" ]
+# Start runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+WORKDIR /app
+COPY --from=build-env /app/server/out .
+ENTRYPOINT ["dotnet", "tower.dll"]
