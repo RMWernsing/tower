@@ -1,41 +1,20 @@
-# Use an official Node.js runtime as the base image for the client build
-FROM --platform=linux/amd64 node:22-slim AS client-builder
+# Use the official Node.js image as a base image
+FROM node:latest
 
-# Set the working directory in the client builder container
-WORKDIR /app/client
+# Set the working directory inside the container
+WORKDIR /app
 
-# Copy the client-side package.json and package-lock.json to the client builder container
-COPY client/package*.json ./
+# Copy package.json and package-lock.json (if available)
+COPY package*.json ./
 
-# Install client application dependencies
+# Install application dependencies
 RUN npm install
 
-# Copy the client application source code to the client builder container
-COPY client ./
+# Copy the rest of the application code
+COPY . .
 
-# Build the client-side code
-RUN npm run build
+# Expose the port the app runs on
+EXPOSE 3000
 
-# Manually specify an amd64 arch build environment for the dotnet restore to complete
-FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine-amd64 AS build-env
-
-WORKDIR /app/server
-
-# Copy everything
-COPY server/*.csproj ./
-
-# Restore as distinct layers
-RUN dotnet restore
-
-COPY server ./
-COPY --from=client-builder /app/client/dist /app/server/wwwroot
-
-# Build and publish a release
-RUN dotnet publish -c Release -o out
-# If build fails here, check your /server folder for a *.sln file and delete it
-
-# Start runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:9.0
-WORKDIR /app
-COPY --from=build-env /app/server/out .
-ENTRYPOINT ["dotnet", "tower.dll"]
+# Define the command to start the application
+CMD ["npm", "start"]
