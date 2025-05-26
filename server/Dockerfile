@@ -1,41 +1,25 @@
-# Use an official Node.js runtime as the base image for the client build
-FROM --platform=linux/amd64 node:22-slim AS client-builder
-
-# Set the working directory in the client builder container
+# 1. Build the frontend
+FROM node:22-slim AS client-builder
 WORKDIR /app/client
-
-# Copy the client-side package.json and package-lock.json to the client builder container
 COPY client/package*.json ./
-
-# Install client application dependencies
 RUN npm install
-
-# Copy the client application source code to the client builder container
 COPY client ./
-
-# Build the client-side code
 RUN npm run build
 
-# Manually specify an amd64 arch build environment for the dotnet restore to complete
-FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine-amd64 AS build-env
-
+# 2. Build the backend
+FROM node:22-slim AS server-builder
 WORKDIR /app/server
-
-# Copy everything
-COPY server/*.csproj ./
-
-# Restore as distinct layers
-RUN npm install
-
+COPY server/package*.json ./
+RUN npm install --production
 COPY server ./
-COPY --from=client-builder /app/client/dist /app/server/wwwroot
 
-# Build and publish a release
-RUN npm run build 
-# If build fails here, check your /server folder for a *.sln file and delete it
+# Copy built frontend into backend (e.g., to serve static files)
+COPY --from=client-builder /app/client/dist /app/server/public
 
-# Start runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:9.0
+# 3. Runtime image
+FROM node:22-slim
 WORKDIR /app
-COPY --from=build-env /app/server/out .
-ENTRYPOINT ["dotnet", "tower.dll"]
+COPY --from=server-builder /app/server ./
+
+# Start the Node.js backend
+CMD ["npm", "start"]
