@@ -31,11 +31,11 @@ COPY server ./
 COPY --from=client-builder /app/client/dist /app/server/wwwroot
 
 # Build and publish a release
-RUN npm run build
+RUN npm run build -c Release -o out
 # If build fails here, check your /server folder for a *.sln file and delete it
 
 # Start runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 COPY --from=build-env /app/server/out .
-ENTRYPOINT ["dotnet", "tower.dll"]
+ENTRYPOINT ["npm", "tower.dll"]
