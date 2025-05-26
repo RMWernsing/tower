@@ -25,17 +25,17 @@ WORKDIR /app/server
 COPY server/*.csproj ./
 
 # Restore as distinct layers
-RUN dotnet restore
+RUN npm install
 
 COPY server ./
 COPY --from=client-builder /app/client/dist /app/server/wwwroot
 
 # Build and publish a release
-RUN dotnet publish -c Release -o out
+RUN npm run build 
 # If build fails here, check your /server folder for a *.sln file and delete it
 
 # Start runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 COPY --from=build-env /app/server/out .
-ENTRYPOINT ["npm", "tower.dll"]
+ENTRYPOINT ["dotnet", "tower.dll"]
