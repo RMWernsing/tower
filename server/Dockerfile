@@ -25,7 +25,7 @@ WORKDIR /app/server
 COPY server/*.csproj ./
 
 # Restore as distinct layers
-RUN npm install --production
+RUN dotnet restore
 
 COPY server ./
 COPY --from=client-builder /app/client/dist /app/server/wwwroot
