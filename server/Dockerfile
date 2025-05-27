@@ -19,6 +19,7 @@ COPY --from=client-builder /app/client/dist /app/server/public
 # 3. Runtime image
 FROM node:22-slim
 WORKDIR /app
+EXPOSE 3000
 COPY --from=server-builder /app/server ./
 
 # Start the Node.js backend
