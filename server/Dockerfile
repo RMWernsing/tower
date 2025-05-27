@@ -23,4 +23,4 @@ EXPOSE 3000
 COPY --from=server-builder /app/server ./
 
 # Start the Node.js backend
-CMD ["npm", "start"]
+CMD ["npm", "server.js"]
