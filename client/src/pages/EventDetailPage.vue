@@ -14,7 +14,7 @@ const event = computed(() => AppState.activeEvent)
 const account = computed(() => AppState.account)
 const tickets = computed(() => event.value.capacity - event.value.ticketCount)
 const attendees = computed(() => AppState.attendees)
-const isAttending = computed(() => attendees.value.some(attendee => attendee.accountId == account.value.id))
+const isAttending = computed(() => attendees.value.some(attendee => attendee.accountId == account.value?.id))
 const comments = computed(() => AppState.comments)
 const cancelButton = computed(() => {
   if (!event.value.isCanceled) {
@@ -163,10 +163,10 @@ async function getComments() {
                 Comments
               </h2>
               <div class="bg-grey p-3 rounded-5 mb-5 shadow-lg">
-                <div>
+                <div v-if="account" class="mb-4">
                   <CommentForm />
                 </div>
-                <div v-if="comments">
+                <div v-if="comments" class="comments-list">
                   <div v-for="comment in comments" :key="comment.id">
                     <CommentCard :comment="comment" />
                   </div>
@@ -178,11 +178,12 @@ async function getComments() {
             <div class="text-center my-3 bg-grey rounded-4 p-2 shadow-lg">
               <p class="fs-3">Interested in Going?</p>
               <div class="bg-light rounded-4 py-2 mb-4 mx-2">
-                <p class="fs-5">Grab a Ticket!</p>
+                <p v-if="account" class="fs-5">Grab a Ticket!</p>
                 <p v-if="isAttending">You have a ticket for this event!!!</p>
-                <button :disabled="ticketsLeft == 0 || event.isCanceled" @click="buyTicket()" class="btn btn-indigo"
-                  title="buy a ticket">Buy a
+                <button v-if="account" :disabled="ticketsLeft == 0 || event.isCanceled" @click="buyTicket()"
+                  class="btn btn-indigo" title="buy a ticket">Buy a
                   ticket</button>
+                <p v-else>Log In to Buy Ticket</p>
                 <p class="mt-3">{{ ticketsLeft }} tickets remaining</p>
               </div>
             </div>
@@ -224,5 +225,11 @@ async function getComments() {
   border-radius: 50%;
   object-fit: cover;
   height: 4em;
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 </style>
